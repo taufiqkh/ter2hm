@@ -15,7 +15,8 @@ public class TerReader {
     private static final int X_POINT_SIZE = 4;
     private static final int Y_POINT_SIZE = 4;
     private static final int SIZE_SIZE = 4;
-    private static final int SCALE_SIZE = 3 * 4;
+    private static final int SCALE_OFFSET_SIZE = 4;
+    private static final int SCALE_SIZE = 3 * SCALE_OFFSET_SIZE;
     private static final int CURVE_MODE_SIZE = 4;
     private static final int RADIUS_SIZE = 4;
     private static final int HEIGHT_SCALE_SIZE = 2;
@@ -134,7 +135,7 @@ public class TerReader {
 
     private Scale readScale() throws IOException, TerReaderException {
         ByteBuffer buffer = readBytes(ChunkType.SCAL, SCALE_SIZE);
-        return new Scale(buffer.getFloat(), buffer.getFloat(1), buffer.getFloat(2));
+        return new Scale(buffer.getFloat(), buffer.getFloat(SCALE_OFFSET_SIZE), buffer.getFloat(2 * SCALE_OFFSET_SIZE));
     }
 
     private float readRadius() throws IOException, TerReaderException {
