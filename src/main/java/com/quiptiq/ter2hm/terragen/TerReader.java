@@ -5,7 +5,6 @@ import com.quiptiq.ter2hm.terragen.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -84,11 +83,17 @@ public class TerReader {
                         if (size < 0) {
                             throw new TerFormatException("No size specified");
                         }
+                        xPoints = (int) Math.sqrt(size);
+                        if (xPoints * xPoints != size) {
+                            throw new TerFormatException(
+                                    "Size " + size + " is not a square, but no X and Y points have been defined");
+                        }
+                        yPoints = xPoints;
                         heightScale = readHeightScale();
                         baseHeight = readBaseHeight();
                         elevations = readElevations(size);
                     } else if (xPoints < 0 || yPoints < 0) {
-                        throw new TerFormatException("X and Y points not properly specified");
+                        throw new TerFormatException("X and Y points not both properly specified");
                     } else {
                         heightScale = readHeightScale();
                         baseHeight = readBaseHeight();
@@ -112,7 +117,7 @@ public class TerReader {
             throw new TerFormatException(
                     "Expected " + expectedLength + " bytes reading chunk type " + chunkType + ". Found " + bytesRead);
         }
-        return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+        return ByteBuffer.wrap(bytes).order(TerFileFormat.BYTE_ORDER);
     }
 
     private int readXPoints() throws IOException, TerFormatException {

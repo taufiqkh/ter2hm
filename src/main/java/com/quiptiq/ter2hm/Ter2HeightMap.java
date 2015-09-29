@@ -42,6 +42,11 @@ public class Ter2HeightMap {
             System.out.println("Curvature mode: " + terFile.getCurveMode());
             System.out.println("Height scale: " + terFile.getHeightScale());
             System.out.println("Base height: " + terFile.getBaseHeight());
+            Raw32Converter raw32Converter = new Raw32Converter();
+            FileOutputStream fileOutputStream = new FileOutputStream("out.raw32");
+            raw32Converter.convert(terFile, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
         } catch (IOException e) {
             System.err.println("Couldn't read " + fileName);
             e.printStackTrace();

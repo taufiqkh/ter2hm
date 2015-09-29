@@ -31,6 +31,7 @@ public class TerFileDescriptor {
         this.heightScale = heightScale;
         this.baseHeight = baseHeight;
         this.elevations = elevations.asReadOnlyBuffer();
+        this.elevations.mark();
     }
 
     public int getXPoints() {
@@ -57,19 +58,21 @@ public class TerFileDescriptor {
         return curveMode;
     }
 
-    /**
-     * Returns the elevations as a read-only buffer.
-     * @return
-     */
-    public ShortBuffer getElevations() {
-        return elevations.duplicate();
-    }
-
     public int getHeightScale() {
         return heightScale;
     }
 
     public int getBaseHeight() {
         return baseHeight;
+    }
+
+    public short getElevation(int x, int y) {
+        short elevation = elevations.get(y + x * yPoints);
+        elevations.reset();
+        return elevation;
+    }
+
+    public float absoluteHeight(short elevation) {
+        return (float) (baseHeight + elevation * (heightScale / 65536.0));
     }
 }
