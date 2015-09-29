@@ -83,8 +83,8 @@ public class TerReader {
                         if (size < 0) {
                             throw new TerFormatException("No size specified");
                         }
-                        xPoints = (int) Math.sqrt(size);
-                        if (xPoints * xPoints != size) {
+                        xPoints = (int) Math.sqrt(size + 1);
+                        if (xPoints * xPoints != size + 1) {
                             throw new TerFormatException(
                                     "Size " + size + " is not a square, but no X and Y points have been defined");
                         }
@@ -164,7 +164,7 @@ public class TerReader {
     }
 
     private ShortBuffer readElevations(int size) throws IOException, TerFormatException {
-        return readBytes(ChunkType.ALTW, TerFileFormat.ELEVATION_SIZE * size * size).asShortBuffer();
+        return readBytes(ChunkType.ALTW, TerFileFormat.ELEVATION_SIZE * (size + 1) * (size + 1)).asShortBuffer();
     }
 
     private ChunkType readChunkType() throws IOException, TerFormatException {
