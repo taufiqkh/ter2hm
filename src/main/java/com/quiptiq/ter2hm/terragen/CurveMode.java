@@ -1,9 +1,9 @@
-package com.quiptiq.ter2hm;
+package com.quiptiq.ter2hm.terragen;
 
 /**
 * Curve mode
 */
-enum CurveMode {
+public enum CurveMode {
     FLAT(0),
     DRAPED(1),
     UNKNOWN(-1);

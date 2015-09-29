@@ -1,4 +1,4 @@
-package com.quiptiq.ter2hm;
+package com.quiptiq.ter2hm.terragen;
 
 /**
  * Scale, in x, y, z

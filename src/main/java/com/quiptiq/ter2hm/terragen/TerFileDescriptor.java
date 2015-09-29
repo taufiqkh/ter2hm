@@ -1,4 +1,7 @@
-package com.quiptiq.ter2hm;
+package com.quiptiq.ter2hm.terragen;
+
+import com.quiptiq.ter2hm.terragen.CurveMode;
+import com.quiptiq.ter2hm.terragen.Scale;
 
 import java.nio.ShortBuffer;
 

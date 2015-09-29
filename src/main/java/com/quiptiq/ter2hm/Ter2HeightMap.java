@@ -1,5 +1,10 @@
 package com.quiptiq.ter2hm;
 
+import com.quiptiq.ter2hm.terragen.Scale;
+import com.quiptiq.ter2hm.terragen.TerFileDescriptor;
+import com.quiptiq.ter2hm.terragen.TerFormatException;
+import com.quiptiq.ter2hm.terragen.TerReader;
+
 import java.io.*;
 
 /**
@@ -12,18 +17,22 @@ public class Ter2HeightMap {
             System.exit(1);
         }
         String fileName = args[0];
-        BufferedInputStream inputStream;
+        FileInputStream fileInputStream;
+        InputStream data = null;
+
         try {
-            inputStream = new BufferedInputStream(new FileInputStream(fileName));
+            fileInputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + fileName);
+            System.err.println("Couldn find file: " + fileName);
+            e.printStackTrace();
             System.exit(1);
             return;
         }
-        TerReader terReader = new TerReader(inputStream);
         try {
+            data = new BufferedInputStream(fileInputStream);
+            TerReader terReader = new TerReader(data);
             TerFileDescriptor terFile = terReader.read();
-            System.out.println(".ter file " + fileName + "read successfully.");
+            System.out.println(fileName + " read successfully.");
             System.out.println("XPoints: " + terFile.getXPoints());
             System.out.println("YPoints: " + terFile.getYPoints());
             System.out.println("Size: " + terFile.getSize());
@@ -37,13 +46,20 @@ public class Ter2HeightMap {
             System.err.println("Couldn't read " + fileName);
             e.printStackTrace();
             System.exit(1);
-        } catch (TerReaderException e) {
+        } catch (TerFormatException e) {
             System.err.println("Unexpected format in file " + fileName);
             e.printStackTrace();
             System.exit(1);
         } finally {
+            if (data != null) {
+                try {
+                    data.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
             try {
-                inputStream.close();
+                fileInputStream.close();
             } catch (IOException e) {
                 // ignore
             }
