@@ -38,6 +38,14 @@ public class TerReader {
         this.inputStream = inputStream;
     }
 
+    /**
+     * Start reading the terragen input stream.
+     *
+     * @return Terragen file descriptor containing the information read.
+     *
+     * @throws IOException if any IO errors occur while reading the input stream.
+     * @throws TerReaderException if any file format errors occur while reading the input stream.
+     */
     public TerFileDescriptor read() throws IOException, TerReaderException {
         byte[] header = new byte[HEADER.length];
         int bytesRead = inputStream.read(header);
@@ -143,7 +151,12 @@ public class TerReader {
     }
 
     private CurveMode readCurveMode() throws IOException, TerReaderException {
-        return CurveMode.forMode(readBytes(ChunkType.CRVM, CURVE_MODE_SIZE).getInt());
+        int mode = readBytes(ChunkType.CRVM, CURVE_MODE_SIZE).getInt();
+        try {
+            return CurveMode.forMode(mode);
+        } catch (IllegalArgumentException e) {
+            throw new TerReaderException("Unknown curve mode number found: " + mode, e);
+        }
     }
 
     private int readHeightScale() throws IOException, TerReaderException {
@@ -155,11 +168,11 @@ public class TerReader {
     }
 
     private ShortBuffer readElevations(int xPoints, int yPoints) throws IOException, TerReaderException {
-        return readBytes(ChunkType.ALTW, ELEVATION_SIZE * xPoints * yPoints).asShortBuffer().asReadOnlyBuffer();
+        return readBytes(ChunkType.ALTW, ELEVATION_SIZE * xPoints * yPoints).asShortBuffer();
     }
 
     private ShortBuffer readElevations(int size) throws IOException, TerReaderException {
-        return readBytes(ChunkType.ALTW, ELEVATION_SIZE * size * size).asShortBuffer().asReadOnlyBuffer();
+        return readBytes(ChunkType.ALTW, ELEVATION_SIZE * size * size).asShortBuffer();
     }
 
     private ChunkType readChunkType() throws IOException, TerReaderException {

@@ -13,13 +13,18 @@ enum CurveMode {
         this.mode = mode;
     }
 
+    /**
+     * Returns the curve mode represented by the given integer.
+     * @param mode
+     * @return
+     */
     public static CurveMode forMode(int mode) {
-        if (mode == 0) {
+        if (mode == FLAT.mode) {
             return FLAT;
-        } else if (mode == 1) {
+        } else if (mode == DRAPED.mode) {
             return DRAPED;
         } else {
-            return UNKNOWN;
+            throw new IllegalArgumentException("Invalid curve mode " + mode);
         }
     }
 }

@@ -3,8 +3,8 @@ package com.quiptiq.ter2hm;
 import java.nio.ShortBuffer;
 
 /**
- * Created with IntelliJ IDEA. User: taufiq Date: 29/09/15 Time: 3:48 PM To change this template use File | Settings |
- * File Templates.
+ * Terragen file descriptor. This class is not thread safe, as the elevations cannot be guaranteed to be immutable.
+ * This class will not modify the initial buffer.
  */
 public class TerFileDescriptor {
     private final int xPoints;
@@ -27,7 +27,7 @@ public class TerFileDescriptor {
         this.curveMode=  curveMode;
         this.heightScale = heightScale;
         this.baseHeight = baseHeight;
-        this.elevations = elevations;
+        this.elevations = elevations.asReadOnlyBuffer();
     }
 
     public int getXPoints() {
@@ -54,8 +54,12 @@ public class TerFileDescriptor {
         return curveMode;
     }
 
+    /**
+     * Returns the elevations as a read-only buffer.
+     * @return
+     */
     public ShortBuffer getElevations() {
-        return elevations;
+        return elevations.duplicate();
     }
 
     public int getHeightScale() {
